@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GainsPlan 3000 | Tygodniowy Plan Diety na Masę (3024 kcal)</title>
+  <meta name="description" content="Nowoczesna aplikacja do zarządzania pełnym 7-dniowym planem diety na masę 3000 kcal z bazą przepisów, kalendarzem, edycją i zamianą posiłków.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation for Desktop -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 18h12"></path>
+            <path d="M3 22h18"></path>
+            <path d="m19 10-4-4-5 5-4-4-3 3"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h2>GainsPlan <span class="badge-pro">PRO</span></h2>
+          <span class="user-tag">3024 kcal • Tydzień 1-7</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-item active" data-tab="plan" id="nav-plan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Plan Posiłków</span>
+        </button>
+
+        <button class="nav-item" data-tab="recipes" id="nav-recipes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            <path d="M12 6v6"></path>
+            <path d="M9 9h6"></path>
+          </svg>
+          <span>Baza Przepisów</span>
+          <span class="badge-counter" id="recipes-badge">14</span>
+        </button>
+
+        <button class="nav-item" data-tab="products" id="nav-products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <span>Baza Produktów</span>
+          <span class="badge-counter" id="products-badge">0</span>
+        </button>
+
+        <button class="nav-item" data-tab="shopping" id="nav-shopping">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span>Lista Zakupów</span>
+          <span class="badge-counter" id="shop-badge">0</span>
+        </button>
+      </nav>
+
+      <!-- Mini Water Tracker in Sidebar -->
+      <div class="sidebar-card water-widget">
+        <div class="card-header-compact">
+          <div class="flex-align">
+            <span class="water-icon">💧</span>
+            <span class="widget-title">Nawodnienie</span>
+          </div>
+          <span class="water-count" id="water-display">1.5 / 3.0 L</span>
+        </div>
+        <div class="water-bar-bg">
+          <div class="water-bar-fill" id="water-progress-bar" style="width: 50%;"></div>
+        </div>
+        <div class="water-buttons">
+          <button class="btn-xs" id="btn-water-minus">-250ml</button>
+          <button class="btn-xs btn-primary-xs" id="btn-water-plus">+250ml</button>
+        </div>
+      </div>
+
+      <!-- User Stats summary in sidebar -->
+      <div class="sidebar-user">
+        <div class="avatar">22L</div>
+        <div class="user-meta">
+          <span class="name">Tymoteusz (65 kg)</span>
+          <span class="target">Plan powtarzalny co tydzień</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top header bar -->
+      <header class="top-bar">
+        <div class="header-left">
+          <h1 id="page-heading">Jadłospis Tygodniowy na Masę</h1>
+          <p class="subtitle" id="page-subtitle">Śniadanie -> Obiad na 2 dni -> Kolacja -> Gainer na noc</p>
+        </div>
+
+        <div class="header-actions">
+          <button class="action-btn" id="btn-reset-day" title="Zresetuj posiłki dla tego dnia">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            <span>Reset Dnia</span>
+          </button>
+          <button class="action-btn" onclick="copyFullWeekPlan()" title="Skopiuj cały plan tygodnia (tekst)">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Kopiuj Tydzień</span>
+          </button>
+          <button class="action-btn btn-export" id="btn-copy-all-fitatu" title="Kopiuj dzisiejsze dania do Fitatu">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>Dziś do Fitatu</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: MEAL PLAN & CALENDAR VIEWS -->
+      <section class="tab-pane active" id="tab-plan">
+        <!-- VIEW SELECTOR BAR (Dzień / Tydzień / Miesiąc) -->
+        <div class="plan-subnav-bar">
+          <div class="view-mode-toggle">
+            <button class="view-btn active" data-view="day" id="btn-view-day">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>Widok Dnia (Szczegółowy)</span>
+            </button>
+            <button class="view-btn" data-view="week" id="btn-view-week">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Siatka 7 Dni (Cały Tydzień)</span>
+            </button>
+            <button class="view-btn" data-view="calendar" id="btn-view-calendar">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <circle cx="8" cy="14" r="1.5"></circle>
+                <circle cx="12" cy="14" r="1.5"></circle>
+                <circle cx="16" cy="14" r="1.5"></circle>
+              </svg>
+              <span>Pełny Kalendarz Cyklu (Miesiąc)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. DAY VIEW -->
+        <div id="view-container-day">
+          <!-- 7-DAYS PICKER ROW -->
+          <div class="week-selector-wrapper">
+            <div class="week-days-pills" id="week-days-container">
+              <!-- Injected by app.js (PN, WT, ŚR, CZW, PT, SOB, ND) -->
+            </div>
+          </div>
+
+          <!-- Daily Macro Overview Card -->
+          <div class="macro-dashboard">
+            <div class="circle-card">
+              <div class="circle-wrap">
+                <svg class="progress-ring" width="140" height="140">
+                  <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.07)" stroke-width="10" cx="70" cy="70" r="56" fill="transparent"/>
+                  <circle class="progress-ring__circle" id="calorie-circle" stroke="url(#accent-gradient)" stroke-width="10" cx="70" cy="70" r="56" fill="transparent" stroke-dasharray="351.85" stroke-dashoffset="351.85"/>
+                  <defs>
+                    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#10b981"/>
+                      <stop offset="100%" stop-color="#06b6d4"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="circle-content">
+                  <span class="circle-number" id="calories-eaten">0</span>
+                  <span class="circle-label" id="circle-target-label">/ 3120 kcal</span>
+                </div>
+              </div>
+              <div class="circle-info">
+                <h3>Dzienny Bilans Energii</h3>
+                <p id="calories-left-text">Zostało: 3024 kcal do osiągnięcia nadwyżki</p>
+                <div class="status-pill" id="macro-status-pill">Początek dnia</div>
+              </div>
+            </div>
+
+            <div class="macro-bars-card">
+              <div class="macro-item">
+                <div class="macro-meta">
+                  <span class="macro-title">Białko (2.6g/kg)</span>
+                  <span class="macro-val" id="val-protein">0 / 168 g</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill protein-bar" id="bar-protein" style="width: 0%;"></div>
+                </div>
+                <span class="macro-sub">Klucz do budowy czystej masy mięśniowej</span>
+              </div>
+
+              <div class="macro-item">
+                <div class="macro-meta">
+                  <span class="macro-title">Węglowodany</span>
+                  <span class="macro-val" id="val-carbs">0 / 395 g</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill carbs-bar" id="bar-carbs" style="width: 0%;"></div>
+                </div>
+                <span class="macro-sub">Główne paliwo treningowe i glikogen</span>
+              </div>
+
+              <div class="macro-item">
+                <div class="macro-meta">
+                  <span class="macro-title">Tłuszcze</span>
+                  <span class="macro-val" id="val-fat">0 / 81 g</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill fat-bar" id="bar-fat" style="width: 0%;"></div>
+                </div>
+                <span class="macro-sub">Optymalizacja hormonów & testosteron</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meal Filter / Cooking Batch Banner -->
+          <div class="batch-cooking-banner">
+            <div class="batch-info">
+              <div class="batch-icon">💡</div>
+              <div>
+                <div id="batch-banner-text">
+                  <strong>Poniedziałek:</strong> Gotujesz Obiad A na 2 dni (Pn + Wt).
+                </div>
+              </div>
+            </div>
+            <div class="workout-pill">
+              <span>Dzień:</span>
+              <label class="switch-wrap" style="pointer-events: none;">
+                <input type="checkbox" id="gym-day-toggle" checked>
+                <span class="switch-slider"></span>
+              </label>
+              <span id="gym-label">Dzień Treningowy 🏋️</span>
+            </div>
+          </div>
+
+          <!-- Meals List -->
+          <div class="meals-grid" id="meals-container">
+            <!-- Meal cards injected dynamically via app.js -->
+          </div>
+        </div>
+
+        <!-- 2. WEEK GRID VIEW (ALL 7 DAYS MATRIX) -->
+        <div id="view-container-week" class="hidden">
+          <div class="week-matrix-header">
+            <h3>Plan 7 Dni w Pigułce</h3>
+            <p class="subtitle">Przejrzyj cały tydzień, zamieniaj posiłki jednym kliknięciem lub przechodź do wybranego dnia.</p>
+          </div>
+          <div class="week-matrix-grid" id="week-matrix-container">
+            <!-- 7 columns injected dynamically -->
+          </div>
+        </div>
+
+        <!-- 3. FULL MONTH CALENDAR VIEW -->
+        <div id="view-container-calendar" class="hidden">
+          <div class="month-calendar-header">
+            <div class="cal-header-top">
+              <div class="cal-title-wrap">
+                <h3>Kalendarz Cyklu Treningowego & Diety</h3>
+                <p class="subtitle">Pełny wgląd w każdy dzień: siłownia co 2. dzień, gotowanie obiadów na 2 dni i rozkład 4 posiłków.</p>
+              </div>
+              <div class="calendar-controls">
+                <button class="cal-nav-btn" id="cal-prev-month" title="Poprzedni miesiąc">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <span class="cal-month-name" id="cal-month-title">Wrzesień 2026</span>
+                <button class="cal-nav-btn" id="cal-next-month" title="Następny miesiąc">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+                <button class="cal-today-btn" id="cal-today-btn">Bieżący Dzień</button>
+              </div>
+            </div>
+            <div class="calendar-legend">
+              <span class="legend-item"><span class="legend-dot gym"></span> Siłownia (Trening co 2. dzień)</span>
+              <span class="legend-item"><span class="legend-dot batch"></span> Gotowanie x2 (Obiad na 2 dni)</span>
+              <span class="legend-item"><span class="legend-dot rest"></span> Regeneracja</span>
+            </div>
+          </div>
+          <div class="month-calendar-grid" id="month-calendar-container">
+            <!-- Calendar days grid injected dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: RECIPE BOOK & EDITOR -->
+      <section class="tab-pane" id="tab-recipes">
+        <div class="tab-header-flex">
+          <div>
+            <h2>Książka Przepisów & Edytor</h2>
+            <p class="subtitle">Wszystkie posiłki z Twojego planu. Możesz je edytować, zmieniać gramatury lub dodawać własne dania.</p>
+          </div>
+          <button class="btn-primary" onclick="openRecipeModal()" id="btn-add-recipe">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 0.35rem;">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            + Dodaj Nowy Przepis
+          </button>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="recipes-controls">
+          <div class="search-input-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="recipes-search" placeholder="Szukaj przepisu lub składnika (np. chałwa, kurczak, gainer)...">
+          </div>
+
+          <div class="filter-pills" id="recipe-filter-pills">
+            <button class="pill-btn active" data-filter="all">Wszystkie</button>
+            <button class="pill-btn" data-filter="shake">Szejki Śniadaniowe</button>
+            <button class="pill-btn" data-filter="dinner">Obiady (Batch-cook)</button>
+            <button class="pill-btn" data-filter="kolacja">Kolacje (Wiele opcji)</button>
+            <button class="pill-btn" data-filter="gainer">Gainer (Na noc)</button>
+          </div>
+        </div>
+
+        <!-- Recipe Cards Grid -->
+        <div class="recipes-catalog-grid" id="recipes-catalog">
+          <!-- Injected dynamically via app.js -->
+        </div>
+      </section>
+
+      <!-- TAB 3: SHOPPING LIST -->
+      <section class="tab-pane" id="tab-shopping">
+        <div class="tab-header-flex">
+          <div>
+            <h2>Inteligentna Lista Zakupów (Cały Tydzień)</h2>
+            <p class="subtitle">Składniki zsumowane i pogrupowane działami sklepu z uwzględnieniem obiadów na 2 dni i odżywek.</p>
+          </div>
+          <div class="days-selector">
+            <span>Zakupy na:</span>
+            <div class="btn-group" id="shop-days-group">
+              <button class="btn-toggle" data-days="2">2 dni</button>
+              <button class="btn-toggle" data-days="4">4 dni</button>
+              <button class="btn-toggle active" data-days="7">7 dni (Cały tydzień)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="shopping-layout" id="shopping-categories">
+          <!-- Categories with checkable items injected dynamically -->
+        </div>
+
+        <div class="shopping-export-box">
+          <button class="btn-secondary" id="btn-copy-shopping">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Kopiuj listę zakupów (SMS / WhatsApp)
+          </button>
+          <button class="btn-ghost" id="btn-reset-shopping">Zresetuj odhaczone</button>
+        </div>
+      </section>
+
+      <!-- TAB 4: PRODUCTS DATABASE -->
+      <section class="tab-pane" id="tab-products">
+        <div class="tab-header-flex">
+          <div>
+            <h2>Baza Produktów & Składników (Makro na 100g)</h2>
+            <p class="subtitle">Wszystkie zapamiętane produkty z kaloriami i makro. Zmiana lub dodanie produktu automatycznie przelicza makro w przepisach!</p>
+          </div>
+          <div class="products-header-actions" style="display: flex; gap: 0.6rem; align-items: center;">
+            <button class="btn-ghost" onclick="resetProductsDatabaseToDefault()" title="Przywróć fabryczne produkty">
+              ↺ Przywróć Domyślne
+            </button>
+            <button class="btn-primary" onclick="openProductModal()" id="btn-add-product">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 0.35rem;">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              + Dodaj Nowy Produkt
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="recipes-controls">
+          <div class="search-input-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="products-search" placeholder="Szukaj produktu (np. serek wiejski, kurczak, banan, twaróg, ryż)...">
+          </div>
+
+          <div class="filter-pills" id="product-filter-pills">
+            <button class="pill-btn active" data-prodfilter="all">Wszystkie</button>
+            <button class="pill-btn" data-prodfilter="dairy">Nabiał & Chłodnia</button>
+            <button class="pill-btn" data-prodfilter="meat">Mięso & Ryby</button>
+            <button class="pill-btn" data-prodfilter="produce">Owoce & Warzywa</button>
+            <button class="pill-btn" data-prodfilter="dry">Produkty Suche</button>
+            <button class="pill-btn" data-prodfilter="fats">Tłuszcze & Dodatki</button>
+            <button class="pill-btn" data-prodfilter="supplements">Suplementy</button>
+          </div>
+        </div>
+
+        <!-- Product Cards Grid -->
+        <div class="products-catalog-grid" id="products-catalog">
+          <!-- Injected dynamically via app.js -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav">
+      <button class="m-nav-item active" data-tab="plan">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span>Posiłki</span>
+      </button>
+      <button class="m-nav-item" data-tab="recipes">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <span>Przepisy</span>
+      </button>
+      <button class="m-nav-item" data-tab="products">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        </svg>
+        <span>Produkty</span>
+      </button>
+      <button class="m-nav-item" data-tab="shopping">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span>Zakupy</span>
+      </button>
+    </nav>
+
+    <!-- MEAL SWAP MODAL (ZAMIANA POSIŁKU) -->
+    <div id="swap-modal" class="modal-overlay hidden">
+      <div class="modal-box" style="max-width: 760px;">
+        <div class="modal-header">
+          <div>
+            <h3 id="swap-modal-title">Zamień Posiłek</h3>
+            <p class="subtitle" id="swap-modal-subtitle">Wybierz inne danie z bazy, aby zastąpić ten posiłek:</p>
+          </div>
+          <button class="modal-close-btn" onclick="closeSwapModal()">×</button>
+        </div>
+        <div class="swap-filters-row">
+          <div class="swap-filter-pills" id="swap-category-filter">
+            <button class="pill-btn active" data-swapfilter="matching" id="swap-filter-matching">Ta sama kategoria</button>
+            <button class="pill-btn" data-swapfilter="all" id="swap-filter-all">Wszystkie potrawy z bazy</button>
+          </div>
+          <button class="btn-restore-swap" id="btn-restore-default-meal" style="display: none;" onclick="restoreDefaultMealForActiveSlot()">
+            ↺ Przywróć domyślny posiłek
+          </button>
+        </div>
+        <div class="swap-options-list" id="swap-options-container">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- RECIPE MODAL (DODAWANIE / EDYCJA PRZEPISU) -->
+    <div id="recipe-modal" class="modal-overlay hidden">
+      <div class="modal-box" style="max-width: 800px;">
+        <div class="modal-header">
+          <div>
+            <h3 id="modal-recipe-title">Dodaj Nowy Przepis</h3>
+            <p class="subtitle" style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Składniki połączone z bazą produktów – kaloryka i makro wyliczają się na żywo!
+            </p>
+          </div>
+          <button class="modal-close-btn" onclick="closeRecipeModal()">×</button>
+        </div>
+
+        <form id="recipe-form" onsubmit="saveRecipeForm(event)">
+          <input type="hidden" id="edit-recipe-id" value="">
+
+          <div class="form-grid">
+            <div class="form-field full-width">
+              <label for="form-recipe-title">Nazwa Przepisu *</label>
+              <input type="text" id="form-recipe-title" required placeholder="np. Szejk orzechowo-bananowy">
+            </div>
+
+            <div class="form-field">
+              <label for="form-recipe-cat">Kategoria *</label>
+              <select id="form-recipe-cat" required>
+                <option value="Śniadaniowy Super-Shake">Śniadaniowy Super-Shake</option>
+                <option value="Obiad • Gotowanie na 2 dni">Obiad • Gotowanie na 2 dni (Batch-cook)</option>
+                <option value="Obiad Świeży (1 dzień)">Obiad Świeży (1 dzień)</option>
+                <option value="Kolacja">Kolacja</option>
+                <option value="Ostatni Posiłek • Nocna Regeneracja & Siła">Ostatni Posiłek (Gainer na noc)</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="form-recipe-time">Czas Przygotowania</label>
+              <input type="text" id="form-recipe-time" placeholder="np. 3 min / 20 min" value="5 min">
+            </div>
+          </div>
+
+          <!-- LIVE AUTO-CALCULATOR MACRO BAR -->
+          <div class="recipe-auto-macro-box">
+            <div class="auto-macro-header">
+              <div class="auto-macro-title">
+                <span class="live-pulse-dot"></span>
+                <strong>Auto-Kalkulator Makro</strong>
+                <span class="badge-auto-calc">Z bazy produktów</span>
+              </div>
+              <div class="auto-macro-controls">
+                <label class="checkbox-inline auto-calc-toggle" title="Automatycznie przepisuje wyliczone makro do pól">
+                  <input type="checkbox" id="form-recipe-autocalc" checked>
+                  <span>Auto-synchronizacja makro</span>
+                </label>
+                <button type="button" class="btn-xs btn-primary-xs" onclick="recalculateRecipeFormMacro(true)" title="Przelicz ponownie ze składników">
+                  ⚡ Przelicz
+                </button>
+              </div>
+            </div>
+
+            <div class="auto-macro-chips">
+              <div class="auto-chip kcal">
+                <span class="chip-label">Kalorie</span>
+                <span class="chip-val" id="live-calc-kcal">0</span>
+                <span class="chip-unit">kcal</span>
+              </div>
+              <div class="auto-chip protein">
+                <span class="chip-label">Białko</span>
+                <span class="chip-val" id="live-calc-protein">0</span>
+                <span class="chip-unit">g</span>
+              </div>
+              <div class="auto-chip carbs">
+                <span class="chip-label">Węglowodany</span>
+                <span class="chip-val" id="live-calc-carbs">0</span>
+                <span class="chip-unit">g</span>
+              </div>
+              <div class="auto-chip fat">
+                <span class="chip-label">Tłuszcze</span>
+                <span class="chip-val" id="live-calc-fat">0</span>
+                <span class="chip-unit">g</span>
+              </div>
+            </div>
+
+            <div class="auto-macro-status" id="live-calc-status">
+              Wprowadź składniki i gramatury, aby wyliczyć makroskładniki.
+            </div>
+          </div>
+
+          <!-- MANUAL OVERRIDE / SYNCED FIELDS -->
+          <div class="macro-inputs-row">
+            <div class="form-field">
+              <label for="form-recipe-kcal">Kcal (przepis) *</label>
+              <input type="number" id="form-recipe-kcal" required placeholder="830" min="0" max="4000">
+            </div>
+
+            <div class="form-field">
+              <label for="form-recipe-protein">Białko (g) *</label>
+              <input type="number" id="form-recipe-protein" required placeholder="45" min="0" max="300" step="0.5">
+            </div>
+
+            <div class="form-field">
+              <label for="form-recipe-carbs">Węgle (g) *</label>
+              <input type="number" id="form-recipe-carbs" required placeholder="100" min="0" max="500" step="0.5">
+            </div>
+
+            <div class="form-field">
+              <label for="form-recipe-fat">Tłuszcze (g) *</label>
+              <input type="number" id="form-recipe-fat" required placeholder="20" min="0" max="300" step="0.5">
+            </div>
+          </div>
+
+          <div class="form-field full-width" style="margin-top: 0.5rem;">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="form-recipe-batch">
+              <span>Ten obiad gotujemy od razu na 2 dni (Batch-cooking)</span>
+            </label>
+          </div>
+
+          <!-- Dynamic Ingredients List -->
+          <div class="ingredients-form-section">
+            <div class="section-label">
+              <div>
+                <span>Składniki i Gramatury</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-left: 0.4rem;">(Wybierz produkt z bazy – makro policzy się automatycznie)</span>
+              </div>
+              <button type="button" class="btn-xs btn-primary-xs" onclick="addIngredientRow()">+ Dodaj Składnik</button>
+            </div>
+
+            <datalist id="products-datalist">
+              <!-- Dynamically populated via app.js -->
+            </datalist>
+
+            <div id="modal-ingredients-list" class="modal-ing-container">
+              <!-- Dynamically populated rows with individual macro chips -->
+            </div>
+          </div>
+
+          <!-- Steps -->
+          <div class="form-field full-width" style="margin-top: 1rem;">
+            <label for="form-recipe-steps">Sposób Przygotowania (każdy krok w nowej linii)</label>
+            <textarea id="form-recipe-steps" rows="4" placeholder="1. Płatki zblenduj na sucho.&#10;2. Wlej mleko i dodaj owoce.&#10;3. Miksuj przez 60 sekund."></textarea>
+          </div>
+
+          <div class="form-field full-width">
+            <label for="form-recipe-note">Wskazówka / Notatka</label>
+            <input type="text" id="form-recipe-note" placeholder="np. Wypij od razu po przygotowaniu.">
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-ghost" onclick="closeRecipeModal()">Anuluj</button>
+            <button type="submit" class="btn-primary">Zapisz Przepis</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- PRODUCT MODAL (DODAWANIE / EDYCJA PRODUKTU W BAZIE) -->
+    <div id="product-modal" class="modal-overlay hidden">
+      <div class="modal-box" style="max-width: 580px;">
+        <div class="modal-header">
+          <div>
+            <h3 id="modal-product-title">Dodaj Produkt do Bazy</h3>
+            <p class="subtitle" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">
+              Wprowadź wartości odżywcze na 100g – system zapamięta je na stałe do wyliczania makro w przepisach!
+            </p>
+          </div>
+          <button class="modal-close-btn" onclick="closeProductModal()">×</button>
+        </div>
+
+        <form id="product-form" onsubmit="saveProductForm(event)">
+          <input type="hidden" id="edit-product-id" value="">
+
+          <div class="form-grid">
+            <div class="form-field full-width">
+              <label for="form-prod-name">Nazwa Produktu *</label>
+              <input type="text" id="form-prod-name" required placeholder="np. Skyr naturalny, Awokado, Łosoś świeży">
+            </div>
+
+            <div class="form-field">
+              <label for="form-prod-cat">Dział w Sklepie *</label>
+              <select id="form-prod-cat" required>
+                <option value="dairy">Nabiał & Chłodnia (Mleko, Jaja, Sery)</option>
+                <option value="meat">Mięso, Ryby & Wędliny</option>
+                <option value="produce">Owoce & Warzywa</option>
+                <option value="dry">Produkty Suche (Płatki, Makaron)</option>
+                <option value="fats">Tłuszcze & Dodatki (Oliwa, Masło)</option>
+                <option value="supplements">Odżywki & Suplementy</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="form-prod-unit">Domyślna Jednostka *</label>
+              <select id="form-prod-unit" required>
+                <option value="g">Gramy (g)</option>
+                <option value="ml">Mililitry (ml)</option>
+                <option value="szt">Sztuki (szt)</option>
+                <option value="łyżka">Łyżka</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="form-prod-kcal">Kalorie na 100g (kcal) *</label>
+              <input type="number" id="form-prod-kcal" required placeholder="np. 115" min="0" max="1000" step="1">
+            </div>
+
+            <div class="form-field">
+              <label for="form-prod-protein">Białko na 100g (g) *</label>
+              <input type="number" id="form-prod-protein" required placeholder="np. 22" min="0" max="100" step="0.1">
+            </div>
+
+            <div class="form-field">
+              <label for="form-prod-carbs">Węglowodany na 100g (g) *</label>
+              <input type="number" id="form-prod-carbs" required placeholder="np. 0" min="0" max="100" step="0.1">
+            </div>
+
+            <div class="form-field">
+              <label for="form-prod-fat">Tłuszcze na 100g (g) *</label>
+              <input type="number" id="form-prod-fat" required placeholder="np. 1.5" min="0" max="100" step="0.1">
+            </div>
+
+            <div class="form-field">
+              <label for="form-prod-piece">Waga 1 sztuki (g) <small style="color: var(--text-muted);">(opcjonalnie)</small></label>
+              <input type="number" id="form-prod-piece" placeholder="np. 55 dla jajka, 120 dla banana" min="1" max="1000" step="1">
+            </div>
+
+            <div class="form-field">
+              <label for="form-prod-spoon">Waga 1 łyżki (g) <small style="color: var(--text-muted);">(opcjonalnie)</small></label>
+              <input type="number" id="form-prod-spoon" placeholder="np. 15 dla masła orzechowego" min="1" max="100" step="1">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-ghost" onclick="closeProductModal()">Anuluj</button>
+            <button type="submit" class="btn-primary">Zapisz Produkt w Bazie</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast" class="toast hidden">
+      <span class="toast-icon">✓</span>
+      <span class="toast-message" id="toast-text">Pomyślnie zapisano!</span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
